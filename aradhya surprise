@@ -1,0 +1,71 @@
+// Basic script to handle yes/no with respectful behavior
+document.addEventListener('click', (e) => {
+  // questions page buttons
+  if (e.target.matches('.question-card .yes')) {
+    const card = e.target.closest('.question-card');
+    const resp = card.querySelector('.response');
+    resp.innerHTML = "<strong>Yay! 😊</strong> Thanks for answering. You're awesome.";
+    animatePulse(card);
+  } else if (e.target.matches('.question-card .no')) {
+    const card = e.target.closest('.question-card');
+    const resp = card.querySelector('.response');
+    resp.innerHTML = "<strong>That's OK.</strong> Thanks for being honest — I respect your answer. If you want to talk, I'm here.";
+    animateGentle(card);
+  }
+
+  // final ask page
+  if (e.target.id === 'finalYes') {
+    showFinal(true);
+  } else if (e.target.id === 'finalNo') {
+    showFinal(false);
+  }
+});
+
+function animatePulse(el){
+  el.style.transition = 'transform 0.35s';
+  el.style.transform = 'scale(1.02)';
+  setTimeout(()=> el.style.transform = '', 350);
+}
+
+function animateGentle(el){
+  el.style.transition = 'transform 0.35s';
+  el.style.transform = 'translateX(6px)';
+  setTimeout(()=> el.style.transform = '', 350);
+}
+
+function showFinal(isYes){
+  const resp = document.getElementById('finalResponse');
+  if (isYes) {
+    resp.innerHTML = "<h3>Yes! 🥳</h3><p>I'm so happy — thank you! Let's plan something nice soon.</p>";
+    launchConfetti();
+  } else {
+    resp.innerHTML = "<h3>Thank you for being honest.</h3><p>I respect your feelings. If you'd like to talk later, I'll be here. 😌</p>";
+    // offer a gentle follow-up option
+    const follow = document.createElement('div');
+    follow.innerHTML = '<p class="small">If you'd like, we can still be friends — or I can give you space.</p>';
+    resp.appendChild(follow);
+  }
+}
+
+// Simple confetti (small)
+function launchConfetti(){
+  // create a few floating emojis as lightweight "confetti"
+  for(let i=0;i<30;i++){
+    const el = document.createElement('div');
+    el.textContent = ['🎉','💚','🏸'][Math.floor(Math.random()*3)];
+    el.style.position='fixed';
+    el.style.left = Math.random()*100+'%';
+    el.style.top = '-5%';
+    el.style.fontSize = (12+Math.random()*24)+'px';
+    el.style.opacity = ''+ (0.8 - Math.random()*0.6);
+    el.style.transform = `rotate(${Math.random()*360}deg)`;
+    el.style.transition = 'transform 3s linear, top 3s linear, opacity 3s linear';
+    document.body.appendChild(el);
+    setTimeout(()=> {
+      el.style.top = (80+Math.random()*20)+'%';
+      el.style.transform = `translateX(${(Math.random()-0.5)*200}px) rotate(${Math.random()*360}deg)`;
+      el.style.opacity = '0';
+    },10);
+    setTimeout(()=> el.remove(),3500);
+  }
+}
